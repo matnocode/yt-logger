@@ -1,6 +1,6 @@
-﻿using yt_logger.Data.Dtos;
-using yt_logger.Data.Entities;
+﻿using yt_logger.Data.Entities;
 using yt_logger.Data.Interfaces;
+using yt_logger.Data.Models;
 
 namespace yt_logger.Services
 {
@@ -26,17 +26,15 @@ namespace yt_logger.Services
         {
             var ytPlaylist = await ytService.GetYtPlaylistAsync(refId);
 
-            var dbPlaylist = new Playlist { RefId = refId, LastLogDate = DateTime.Now, Title = ytPlaylist.Title };
-
-            await playlistRepository.AddAsync(dbPlaylist);
-            var addedDbPlaylist = await playlistRepository.GetByRefId(refId);
+            //must exist
+            var dbPlaylist = await playlistRepository.GetByRefId(refId) ?? throw new BadHttpRequestException("no playlist in db!");
 
             var ytPlaylistItems = await ytService.GetYtPlaylistItemsAsync(refId);
             var playlistItems = new List<PlaylistItem>();
 
-            while (playlistItems.Count != ytPlaylist.ItemCount)
+            while (playlistItems.Count != ytPlaylist.ItemCount - 1)
             {
-                await Task.Run(() => AddItemsAction(playlistItems, ytPlaylistItems, addedDbPlaylist.Id));
+                await Task.Run(() => AddItemsAction(playlistItems, ytPlaylistItems, dbPlaylist.Id));
                 ytPlaylistItems = await ytService.GetYtPlaylistItemsAsync(refId, ytPlaylistItems.NextPageToken);
             }
 
