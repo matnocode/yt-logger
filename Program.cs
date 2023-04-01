@@ -1,4 +1,3 @@
-
 namespace yt_logger
 {
     public class Program
@@ -9,6 +8,7 @@ namespace yt_logger
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddMediatR(conf => conf.RegisterServicesFromAssemblyContaining(typeof(Program)));
 
             var app = builder.Build();
 
