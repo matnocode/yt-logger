@@ -1,7 +1,11 @@
-﻿namespace yt_logger.Data.Entities
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+
+namespace yt_logger.Data.Entities
 {
     public class PlaylistItem : BaseEntity
     {
+        [Key]
         public string RefId { get; set; }
         public string Title { get; set; }
         public string ImgUrl { get; set; } //save locally, cause if deleted video, image deletes too

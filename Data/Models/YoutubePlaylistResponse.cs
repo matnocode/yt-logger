@@ -1,4 +1,4 @@
-﻿namespace yt_logger.Data.Dtos
+﻿namespace yt_logger.Data.Models
 {
     public class YoutubePlaylistResponse
     {
