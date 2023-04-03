@@ -10,5 +10,6 @@ namespace yt_logger.Data.Dtos
         public List<PlaylistItemDto> DeletedItems { get; set; }
         public string RefId { get; set; }
         public int ItemCount { get; set; }
+        public string ImgUrl { get; set; }
     }
 }

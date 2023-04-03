@@ -29,7 +29,13 @@ namespace yt_logger.Services
 
             var playlist = playlistResponse.Items.FirstOrDefault();
 
-            return new YoutubePlaylistResponse { ItemCount = playlist?.ContentDetails.ItemCount ?? 0, NextPageToken = playlistResponse.NextPageToken, Title = playlist?.Snippet.Title ?? "" };
+            return new YoutubePlaylistResponse
+            {
+                ItemCount = playlist?.ContentDetails.ItemCount ?? 0,
+                NextPageToken = playlistResponse.NextPageToken,
+                Title = playlist?.Snippet.Title ?? "",
+                ImgUrl = playlist?.Snippet.Thumbnails.Standard.Url ?? ""
+            };
         }
 
         public async Task<YoutubePlaylistResponseDb> GetYtPlaylistForDbAsync(string ytPlaylistId)

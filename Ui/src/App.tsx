@@ -4,6 +4,7 @@ import HomePage from "./pages/home/HomePage";
 import Container from "./common/Container";
 import ResultPage from "./pages/result/ResultPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import { ToastContainer } from "react-toastify";
 
 const App = () => {
   const queryClient = new QueryClient({
@@ -23,6 +24,7 @@ const App = () => {
           </Route>
         </Routes>
       </QueryClientProvider>
+      <ToastContainer />
     </div>
   );
 };

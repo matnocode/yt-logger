@@ -8,6 +8,7 @@ namespace yt_logger.Data.Entities
         [Key]
         public string RefId { get; set; }
         public DateTime LastLogDate { get; set; }
+        public string? ImgUrl { get; set; }//at first wont have
 
         public ICollection<PlaylistItem> PlaylistItems { get; }
     }

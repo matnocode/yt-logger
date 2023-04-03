@@ -1,6 +1,9 @@
-﻿using yt_logger.Data.Entities;
+﻿using Google.Apis.YouTube.v3.Data;
+using yt_logger.Data.Entities;
 using yt_logger.Data.Interfaces;
 using yt_logger.Data.Models;
+using PlaylistItem = Google.Apis.YouTube.v3.Data.PlaylistItem;
+using PlaylistItemDb = yt_logger.Data.Entities.PlaylistItem;
 
 namespace yt_logger.Services
 {
@@ -17,7 +20,7 @@ namespace yt_logger.Services
             this.ytService = ytService;
         }
 
-        public async Task<List<PlaylistItem>> GetPlaylistDeltedItems(string playlistRefId)
+        public async Task<List<PlaylistItemDb>> GetPlaylistDeltedItems(string playlistRefId)
         {
             return null;
         }
@@ -25,36 +28,57 @@ namespace yt_logger.Services
         public async Task LogPlaylist(string refId)
         {
             var ytPlaylist = await ytService.GetYtPlaylistAsync(refId);
+            if (ytPlaylist == null)
+                throw new BadHttpRequestException("no playlist");
 
             //must exist
             var dbPlaylist = await playlistRepository.GetByRefId(refId) ?? throw new BadHttpRequestException("no playlist in db!");
 
             var ytPlaylistItems = await ytService.GetYtPlaylistItemsAsync(refId);
-            var playlistItems = new List<PlaylistItem>();
 
-            while (playlistItems.Count != ytPlaylist.ItemCount - 1)
+            if (ytPlaylistItems == null)
+                throw new BadHttpRequestException("no playlist");
+
+            var playlistItems = new List<PlaylistItemDb>();
+
+            while (playlistItems.Count < ytPlaylist.ItemCount - 1)
             {
-                await Task.Run(() => AddItemsAction(playlistItems, ytPlaylistItems, dbPlaylist.Id));
-                ytPlaylistItems = await ytService.GetYtPlaylistItemsAsync(refId, ytPlaylistItems.NextPageToken);
+                //await Task.Run(() => AddItemsAction(playlistItems, ytPlaylistItems, dbPlaylist.Id));
+                foreach (var ytItem in ytPlaylistItems.Items)
+                {
+                    await Task.Run(() => AddItemsAction(playlistItems, ytPlaylistItems, dbPlaylist.Id));
+                }
+
+                ytPlaylistItems = await ytService.GetYtPlaylistItemsAsync(refId, ytPlaylistItems.NextPageToken) ?? new YoutubePlaylistItemResponse() { Items = new(), NextPageToken = "" };
             }
 
-            await playlistItemRepository.AddRangeAsync(playlistItems);
+            if (dbPlaylist.PlaylistItems.Count == 0 && playlistItems.Count > 0)
+                await playlistItemRepository.AddRangeAsync(playlistItems);
+            else
+            {
+                if (playlistItems.Count == 0)
+                    throw new BadHttpRequestException("no playlist");
+
+
+                //var newOnes = playlistItems.Where(x=>x.re)
+            }
         }
 
-        Action<List<PlaylistItem>, YoutubePlaylistItemResponse, int> AddItemsAction = (items, ytItems, playlistId) =>
+        Action<List<PlaylistItemDb>, YoutubePlaylistItemResponse, int> AddItemsAction = (items, ytItems, playlistId) =>
         {
             foreach (var ytItem in ytItems.Items)
             {
-                items.Add(new PlaylistItem
-                {
-                    RefId = ytItem.ContentDetails.VideoId,
-                    PlaylistId = playlistId,
-                    ImgUrl = ytItem.Snippet.Thumbnails.Standard.Url,
-                    Title = ytItem.Snippet.Title,
-                    VideoOwnerChannelId = ytItem.Snippet.VideoOwnerChannelId,
-                    VideoOwnerChannelTitle = ytItem.Snippet.VideoOwnerChannelTitle,
-                    VideoPublishedAt = ytItem.ContentDetails.VideoPublishedAt ?? DateTime.MinValue,
-                });
+                if (ytItem != null)
+                    items.Add(new PlaylistItemDb
+                    {
+                        RefId = ytItem.ContentDetails?.VideoId ?? "",
+                        PlaylistId = playlistId,
+                        ImgUrl = ytItem.Snippet?.Thumbnails?.Standard?.Url ?? ytItem.Snippet?.Thumbnails?.Medium?.Url ?? ytItem.Snippet?.Thumbnails?.Default__?.Url ?? "",
+                        Title = ytItem.Snippet?.Title ?? "",
+                        VideoOwnerChannelId = ytItem.Snippet?.VideoOwnerChannelId ?? "" ?? "",
+                        VideoOwnerChannelTitle = ytItem.Snippet?.VideoOwnerChannelTitle ?? "",
+                        VideoPublishedAt = ytItem.ContentDetails?.VideoPublishedAt ?? DateTime.MinValue,
+                    });
             }
         };
     }
