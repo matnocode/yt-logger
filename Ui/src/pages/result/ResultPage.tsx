@@ -50,6 +50,10 @@ const ResultPage: React.FC = () => {
     setCurrentPage(setNew);
   };
 
+  useEffect(() => {
+    refetch();
+  }, [currentPage]);
+
   if (isLoading) return <Loading />;
   if (!isSuccess) return <div>{<h4>Playlist doesnt exist!</h4>}</div>;
 
