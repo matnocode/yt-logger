@@ -1,4 +1,4 @@
-﻿using Google.Apis.YouTube.v3.Data;
+﻿using Microsoft.EntityFrameworkCore;
 using yt_logger.Data.Entities;
 using yt_logger.Data.Interfaces;
 
@@ -16,6 +16,11 @@ namespace yt_logger.Data.Repositories
         public async Task<T> GetAsync(int id)
         {
             return await context.FindAsync<T>(id);
+        }
+
+        public async Task<List<T>> GetAllAsync()
+        {
+            return await context.Set<T>().ToListAsync();
         }
 
         public async Task DeleteAsync(T entity)
@@ -46,6 +51,6 @@ namespace yt_logger.Data.Repositories
         {
             await context.AddRangeAsync(entities);
             await context.SaveChangesAsync();
-        }
+        }     
     }
 }

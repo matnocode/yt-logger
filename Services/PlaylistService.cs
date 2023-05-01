@@ -1,8 +1,6 @@
-﻿using Google.Apis.YouTube.v3.Data;
-using yt_logger.Data.Entities;
+﻿using yt_logger.Data.Entities;
 using yt_logger.Data.Interfaces;
 using yt_logger.Data.Models;
-using PlaylistItem = Google.Apis.YouTube.v3.Data.PlaylistItem;
 using PlaylistItemDb = yt_logger.Data.Entities.PlaylistItem;
 
 namespace yt_logger.Services
@@ -11,75 +9,70 @@ namespace yt_logger.Services
     {
         private readonly IPlaylistRepository playlistRepository;
         private readonly IPlaylistItemRepository playlistItemRepository;
+        private readonly ILogRepository logRepository;
         private readonly IYtService ytService;
 
-        public PlaylistService(IPlaylistRepository playlistRepository, IPlaylistItemRepository playlistItemRepository, IYtService ytService)
+        public PlaylistService(IPlaylistRepository playlistRepository, IYtService ytService, ILogRepository logRepository, IPlaylistItemRepository playlistItemRepository)
         {
             this.playlistRepository = playlistRepository;
-            this.playlistItemRepository = playlistItemRepository;
             this.ytService = ytService;
-        }
-
-        public async Task<List<PlaylistItemDb>> GetPlaylistDeltedItems(string playlistRefId)
-        {
-            return null;
+            this.logRepository = logRepository;
+            this.playlistItemRepository = playlistItemRepository;
         }
 
         public async Task LogPlaylist(string refId)
         {
-            var ytPlaylist = await ytService.GetYtPlaylistAsync(refId);
-            if (ytPlaylist == null)
-                throw new BadHttpRequestException("no playlist");
+            var ytPlaylist = await ytService.GetYtPlaylistAsync(refId) ?? throw new BadHttpRequestException("no playlist");
+            var dbPlaylist = await playlistRepository.GetByRefIdAsync(refId) ?? throw new BadHttpRequestException("no playlist in db!");
 
-            //must exist
-            var dbPlaylist = await playlistRepository.GetByRefId(refId) ?? throw new BadHttpRequestException("no playlist in db!");
-
-            var ytPlaylistItems = await ytService.GetYtPlaylistItemsAsync(refId);
-
-            if (ytPlaylistItems == null)
-                throw new BadHttpRequestException("no playlist");
-
+            var ytPlaylistItems = await ytService.GetYtPlaylistItemsAsync(refId) ?? throw new BadHttpRequestException("no playlist");
             var playlistItems = new List<PlaylistItemDb>();
 
-            while (playlistItems.Count < ytPlaylist.ItemCount - 1)
+            dbPlaylist.ImgUrl = ytPlaylist.ImgUrl;
+
+            do
             {
-                //await Task.Run(() => AddItemsAction(playlistItems, ytPlaylistItems, dbPlaylist.Id));
                 foreach (var ytItem in ytPlaylistItems.Items)
-                {
-                    await Task.Run(() => AddItemsAction(playlistItems, ytPlaylistItems, dbPlaylist.Id));
-                }
+                    if (ytItem != null)
+                        playlistItems.Add(ytItem.ToDbItem());
 
                 ytPlaylistItems = await ytService.GetYtPlaylistItemsAsync(refId, ytPlaylistItems.NextPageToken) ?? new YoutubePlaylistItemResponse() { Items = new(), NextPageToken = "" };
             }
+            while (!string.IsNullOrEmpty(ytPlaylistItems.NextPageToken));
 
-            if (dbPlaylist.PlaylistItems.Count == 0 && playlistItems.Count > 0)
-                await playlistItemRepository.AddRangeAsync(playlistItems);
-            else
-            {
-                if (playlistItems.Count == 0)
-                    throw new BadHttpRequestException("no playlist");
-
-
-                //var newOnes = playlistItems.Where(x=>x.re)
-            }
+            await AddEditPlaylistVideos(dbPlaylist.PlaylistItems?.ToList() ?? new(), playlistItems, dbPlaylist);
         }
 
-        Action<List<PlaylistItemDb>, YoutubePlaylistItemResponse, int> AddItemsAction = (items, ytItems, playlistId) =>
+        async Task AddEditPlaylistVideos(List<PlaylistItemDb> dbItems, List<PlaylistItemDb> newItems, Playlist playlist)
         {
-            foreach (var ytItem in ytItems.Items)
+            playlist.LastLogDate = DateTime.UtcNow;
+
+            if (dbItems.Count > 0)
             {
-                if (ytItem != null)
-                    items.Add(new PlaylistItemDb
-                    {
-                        RefId = ytItem.ContentDetails?.VideoId ?? "",
-                        PlaylistId = playlistId,
-                        ImgUrl = ytItem.Snippet?.Thumbnails?.Standard?.Url ?? ytItem.Snippet?.Thumbnails?.Medium?.Url ?? ytItem.Snippet?.Thumbnails?.Default__?.Url ?? "",
-                        Title = ytItem.Snippet?.Title ?? "",
-                        VideoOwnerChannelId = ytItem.Snippet?.VideoOwnerChannelId ?? "" ?? "",
-                        VideoOwnerChannelTitle = ytItem.Snippet?.VideoOwnerChannelTitle ?? "",
-                        VideoPublishedAt = ytItem.ContentDetails?.VideoPublishedAt ?? DateTime.MinValue,
-                    });
+                var added = new List<PlaylistItemDb>();
+                var deleted = new List<PlaylistItemDb>();
+                //if db doesnt contain item from yt playlist, that means its newly added
+                newItems.ForEach(newItem => { if (!dbItems.Exists(dbItem => newItem.RefId == dbItem.RefId)) added.Add(newItem); });
+
+                //wont add new entries if refId (video id) exist in db
+                var existingDbItems = await playlistItemRepository.GetExisting(newItems.Select(x => x.RefId).ToList());
+                added = added.Select(x => existingDbItems.FirstOrDefault(z => z.RefId == x.RefId) ?? x).ToList();
+
+                //if yt playlist doesnt contain item from db, that means it was logged in db (has entry), but deleted from playlist (doesnt have entry)
+                dbItems.ForEach(dbItem => { if (!newItems.Exists(newItem => newItem.RefId == dbItem.RefId)) deleted.Add(dbItem); });
+
+                playlist.PlaylistItems.AddRange(added);
+                playlist.PlaylistItems.RemoveAll(x => deleted.Exists(d => d.RefId == x.RefId));
+
+                await logRepository.LogAsync(added, deleted, playlist.RefId);
             }
-        };
+            else
+            {
+                await logRepository.LogAsync(new(), new(), playlist.RefId);
+                playlist.PlaylistItems.AddRange(newItems);
+            }
+
+            await playlistRepository.UpdateAsync(playlist);
+        }
     }
 }

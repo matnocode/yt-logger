@@ -13,8 +13,5 @@ namespace yt_logger.Data.Entities
         public string VideoOwnerChannelId { get; set; }
         public DateTime VideoPublishedAt { get; set; }
         public bool IsDeleted { get; set; }
-
-        public int PlaylistId { get; set; }
-        public Playlist Playlist { get; set; }
     }
 }

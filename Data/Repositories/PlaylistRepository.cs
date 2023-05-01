@@ -14,9 +14,9 @@ namespace yt_logger.Data.Repositories
             this.context = context;
         }
 
-        public async Task<Playlist> GetByRefId(string refId)
+        public async Task<Playlist> GetByRefIdAsync(string refId)
         {
-            return await context.Playlists.FirstOrDefaultAsync(x => x.RefId == refId);
+            return await context.Playlists.Include(x => x.PlaylistItems).FirstOrDefaultAsync(x => x.RefId == refId);
         }
     }
 }

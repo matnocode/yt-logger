@@ -34,7 +34,7 @@ namespace yt_logger.Services
                 ItemCount = playlist?.ContentDetails.ItemCount ?? 0,
                 NextPageToken = playlistResponse.NextPageToken,
                 Title = playlist?.Snippet.Title ?? "",
-                ImgUrl = playlist?.Snippet.Thumbnails.Standard.Url ?? ""
+                ImgUrl = playlist?.Snippet.Thumbnails.Standard.Url ?? playlist?.Snippet.Thumbnails.Medium.Url ?? playlist?.Snippet.Thumbnails.Default__.Url ?? ""
             };
         }
 

@@ -1,5 +1,11 @@
-import { Playlist } from "../model/playlistItem";
+import { PagedResult, Playlist, PlaylistItem } from "../model/playlistItem";
 import { apiClient } from "./apiClient";
+
+export const logPlaylist = (refId: string) => {
+  return apiClient
+    .get("/youtube/logPlaylist", { params: { refId: refId } })
+    .json<Playlist>();
+};
 
 export const getPlaylist = (refId: string) => {
   return apiClient
@@ -7,8 +13,14 @@ export const getPlaylist = (refId: string) => {
     .json<Playlist>();
 };
 
-export const logPlaylist = (refId: string) => {
+export const getLogPaged = (
+  currentPage: number,
+  pageSize: number,
+  refId: string
+) => {
   return apiClient
-    .put("/youtube/logPlaylist", { params: { refId: refId } })
-    .json<void>();
+    .get("/youtube/getLogPaged", {
+      params: { refId: refId, pageSize: pageSize, currentPage: currentPage },
+    })
+    .json<PagedResult>();
 };

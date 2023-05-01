@@ -11,5 +11,6 @@ namespace yt_logger.Data
 
         public DbSet<Playlist> Playlists { get; set; }
         public DbSet<PlaylistItem> PlaylistItems { get; set; }
+        public DbSet<Log> Logs { get; set; }
     }
 }

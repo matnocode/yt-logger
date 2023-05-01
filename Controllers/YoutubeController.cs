@@ -8,7 +8,10 @@ namespace yt_logger.Controllers
         [HttpGet]
         public async Task<ActionResult> GetPlaylist([FromQuery] GetPlaylistCommand command) => await SendRequest(command);
 
-        [HttpPut]
+        [HttpGet]
         public async Task<ActionResult> LogPlaylist([FromQuery] LogPlaylistCommand command) => await SendRequest(command);
+
+        [HttpGet]
+        public async Task<ActionResult> GetLogPaged([FromQuery] GetLogPagedCommand command) => await SendRequest(command);
     }
 }

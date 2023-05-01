@@ -1,8 +1,12 @@
-﻿namespace yt_logger.Data.Interfaces
+﻿using yt_logger.Data.Entities;
+using yt_logger.Data.Models;
+
+namespace yt_logger.Data.Interfaces
 {
-    public interface IAsyncRepository<T>
+    public interface IAsyncRepository<T> where T : BaseEntity
     {
-        public Task<T> GetAsync(int id);
+        Task<T> GetAsync(int id);
+        Task<List<T>> GetAllAsync();
         Task DeleteAsync(T entity);
         Task UpdateAsync(T entity);
         Task UpdateRangeAsync(ICollection<T> entities);

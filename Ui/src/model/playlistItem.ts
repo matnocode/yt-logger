@@ -1,8 +1,9 @@
 export interface Playlist {
   title: string;
   refId: string;
-  deletedItems: PlaylistItem[];
+  itemCount: number;
   lastLogged: string;
+  imgUrl: string;
 }
 
 export interface PlaylistItem {
@@ -11,4 +12,19 @@ export interface PlaylistItem {
   videoOwnerChannelTitle: string;
   videoOwnerChannelId: string;
   videoPublishedAt: string;
+  refId: string;
+  isDeleted: boolean;
+  playlistId: number;
+}
+
+export interface Log {
+  timeStamp: string;
+  refId: string;
+  added: PlaylistItem[];
+  deleted: PlaylistItem[];
+}
+
+export interface PagedResult {
+  result: Log[];
+  pageCount: number;
 }

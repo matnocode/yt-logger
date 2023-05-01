@@ -13,9 +13,6 @@ namespace yt_logger.Data.Repositories
             this.context = context;
         }
 
-        public async Task<List<PlaylistItem>> GetDeletedPlaylistItemsAsync(string refId)
-        {
-            return await context.PlaylistItems.Where(x => x.RefId == refId && x.IsDeleted).ToListAsync();
-        }
+        public async Task<List<PlaylistItem>> GetExisting(List<string> refIds) => await context.PlaylistItems.Where(x => refIds.Contains(x.RefId)).ToListAsync();
     }
 }

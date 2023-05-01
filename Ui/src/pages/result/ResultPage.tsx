@@ -1,16 +1,20 @@
 import { useQuery } from "react-query";
 import { useParams } from "react-router";
-import { getPlaylist, logPlaylist } from "../../api/youtube";
-import { Button } from "react-bootstrap";
+import { getLogPaged, getPlaylist, logPlaylist } from "../../api/youtube";
 import Loading from "../../components/Loading";
 import PlaylistNotFound from "./components/PlaylistNotFound";
-import { toast } from "react-toastify";
-import { debounce } from "lodash";
+import LogItem from "./components/LogItem";
+import PlaylistItem from "./components/PlaylistItem";
+import { Button, Pagination } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
+import { PagedResult } from "../../model/playlistItem";
 
 const ResultPage: React.FC = () => {
   const { playlistId } = useParams();
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const { data, isError, isLoading } = useQuery(
+  const { data, isLoading, isSuccess } = useQuery(
     "playlist",
     () => getPlaylist(playlistId ?? ""),
     {
@@ -18,32 +22,78 @@ const ResultPage: React.FC = () => {
     }
   );
 
-  const handleLogClick = debounce(() => {
+  const {
+    data: pagedData,
+    isError: pagedError,
+    isLoading: pagedLoading,
+    refetch,
+  } = useQuery(
+    "paged",
+    () => getLogPaged(currentPage ?? 1, 5, playlistId ?? ""),
+    {
+      enabled: data !== undefined && !isLoading && isSuccess,
+    }
+  );
+
+  const handleLogClick = () => {
     toast.promise(logPlaylist(playlistId ?? ""), {
-      success: "Playlist logged successfully",
-      error: "Encountered error",
-      pending: "Loading",
+      success: "",
+      error: "Error",
+      loading: "Loading...",
     });
-  }, 1500);
+    refetch();
+  };
+
+  const handlePaginationOnClick = (setNew: number) => {
+    if (!pagedData) return;
+    if (setNew <= 0 || setNew > pagedData.pageCount) return;
+    setCurrentPage(setNew);
+  };
 
   if (isLoading) return <Loading />;
-  if (isError)
-    return (
-      <div>
-        <h4>Playlist doesnt exist!</h4>
-      </div>
-    );
+  if (!isSuccess) return <div>{<h4>Playlist doesnt exist!</h4>}</div>;
+
+  console.log("pagedData", pagedData);
 
   return (
     <>
-      {data && data.title ? (
+      {data && isSuccess ? (
         <>
-          {/* found in db, must have full features? */}
-          <div>"{data.title}" Playlist Found!</div>
-
-          <Button variant="outline-dark" onClick={() => handleLogClick()}>
-            Press here to log your playlist
+          <Button className="tw-bg-slate-800" onClick={() => handleLogClick()}>
+            Log playlist
           </Button>
+          <PlaylistItem playlist={data} />
+          <div>
+            {pagedData?.result.map((log, i) => (
+              <div key={`log-${i}`}>
+                <LogItem log={log} />
+              </div>
+            ))}
+            <Pagination className="tw-gap-1">
+              <Pagination.First onClick={() => handlePaginationOnClick(1)} />
+              <Pagination.Prev
+                onClick={() => handlePaginationOnClick(currentPage - 1)}
+              />
+              {[
+                ...Array(pagedData?.pageCount == 0 ? 1 : pagedData?.pageCount),
+              ].map((_, i) => (
+                <Pagination.Item
+                  active={i + 1 === currentPage}
+                  onClick={() => handlePaginationOnClick(i + 1)}
+                >
+                  {i + 1}
+                </Pagination.Item>
+              ))}
+              <Pagination.Next
+                onClick={() => handlePaginationOnClick(currentPage + 1)}
+              />
+              <Pagination.Last
+                onClick={() =>
+                  handlePaginationOnClick(pagedData?.pageCount ?? 1)
+                }
+              />
+            </Pagination>
+          </div>
         </>
       ) : (
         <PlaylistNotFound playlistId={playlistId ?? ""} />
