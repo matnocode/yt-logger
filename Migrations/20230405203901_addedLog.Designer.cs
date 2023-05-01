@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using yt_logger.Data;
 
@@ -11,9 +12,11 @@ using yt_logger.Data;
 namespace yt_logger.Migrations
 {
     [DbContext(typeof(YtLoggerDbContext))]
-    partial class YtLoggerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230405203901_addedLog")]
+    partial class addedLog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -90,7 +93,7 @@ namespace yt_logger.Migrations
                     b.Property<int?>("LogId1")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PlaylistId")
+                    b.Property<int>("PlaylistId")
                         .HasColumnType("int");
 
                     b.Property<string>("RefId")
@@ -133,9 +136,13 @@ namespace yt_logger.Migrations
                         .WithMany("Deleted")
                         .HasForeignKey("LogId1");
 
-                    b.HasOne("yt_logger.Data.Entities.Playlist", null)
+                    b.HasOne("yt_logger.Data.Entities.Playlist", "Playlist")
                         .WithMany("PlaylistItems")
-                        .HasForeignKey("PlaylistId");
+                        .HasForeignKey("PlaylistId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Playlist");
                 });
 
             modelBuilder.Entity("yt_logger.Data.Entities.Log", b =>

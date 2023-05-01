@@ -22,9 +22,9 @@ namespace yt_logger
             builder.Services.AddScoped<IAsyncRepository<PlaylistItem>, AsyncRepository<PlaylistItem>>();
             builder.Services.AddScoped<IPlaylistRepository, PlaylistRepository>();
             builder.Services.AddScoped<IPlaylistItemRepository, PlaylistItemRepository>();
+            builder.Services.AddScoped<ILogRepository, LogRepository>();
 
-
-            builder.Services.AddScoped<IYtService , YtService>();
+            builder.Services.AddScoped<IYtService, YtService>();
             builder.Services.AddScoped<IPlaylistService, PlaylistService>();
 
             var app = builder.Build();

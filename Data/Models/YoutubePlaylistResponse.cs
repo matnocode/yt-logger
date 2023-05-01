@@ -5,5 +5,6 @@
         public long ItemCount { get; set; }
         public string NextPageToken { get; set; }
         public string Title { get; set; }
+        public string ImgUrl { get; set; }
     }
 }

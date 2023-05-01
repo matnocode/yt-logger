@@ -1,15 +1,37 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Form from "react-bootstrap/Form";
 import { useNavigate } from "react-router";
+import { CusError } from "../../../model/error";
 
 const SearchBar: React.FC = () => {
   const navigate = useNavigate();
   const [value, setValue] = useState("");
+  const [errors, setErrors] = useState<CusError | undefined>(undefined);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (validateSearch()) return;
     console.log("e", event);
-    navigate("/results/" + value);
+    navigate("/results/" + getId());
+  };
+
+  useEffect(() => {
+    if (errors) setErrors(undefined);
+  }, [value]);
+
+  const getId = () => {
+    return value.substring(value.indexOf("=") + 1);
+  };
+
+  const validateSearch = () => {
+    if (!value || !value?.includes("https://www.youtube.com/playlist?list=")) {
+      setErrors({
+        label:
+          "link must be: https://www.youtube.com/playlist?list=[your playlist id]",
+      });
+      return true;
+    }
+    return false;
   };
 
   return (
@@ -24,6 +46,7 @@ const SearchBar: React.FC = () => {
               setValue(e.target.value);
             }}
           />
+          {errors && <div className="tw-text-red-600">{errors.label}</div>}
         </Form.Group>
       </Form>
     </div>
