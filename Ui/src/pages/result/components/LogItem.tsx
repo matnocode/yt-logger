@@ -1,67 +1,37 @@
-import { Button, Collapse } from "react-bootstrap";
-import { Log } from "../../../model/playlistItem";
-import { useState } from "react";
+import { FC } from "react";
+import { PlaylistItem } from "../../../model/playlistItem";
+import cn from "classnames";
 
-interface Props {
-  log: Log;
+interface LogItemProps {
+  deleted?: boolean;
+  playlistItem: PlaylistItem;
 }
 
-const LogItem: React.FC<Props> = ({ log }) => {
-  const [openAdded, setOpenAdded] = useState(false);
-  const [openDeleted, setOpenDeleted] = useState(false);
-
+const LogItem: FC<LogItemProps> = ({ deleted, playlistItem }) => {
   return (
-    <div className="tw-mt-3">
-      <div className="tw-flex tw-w-full tw-border-b tw-border-collapse tw-min-h-[100px]">
+    <div className="tw-flex tw-flex-col md:tw-flex-row">
+      <div className="tw-my-2">
+        <img
+          className={cn("tw-max-w-[150px] tw-border-2", {
+            "tw-border-green-700": !deleted,
+            "tw-border-red-700": deleted,
+          })}
+          src={
+            playlistItem.imgUrl && playlistItem.imgUrl.length > 0
+              ? playlistItem.imgUrl
+              : "https://www.publicdomainpictures.net/pictures/280000/velka/not-found-image-15383864787lu.jpg"
+          }
+        />
+      </div>
+      <div className="tw-p-1 md:tw-text-lg">
+        <div>{playlistItem.title}</div>
+        <div>{playlistItem.videoOwnerChannelTitle}</div>
         <div>
-          {GetFormattedDate(new Date(log.timeStamp).toISOString())} [UTC]
-        </div>
-        <div>
-          {log.added.length > 0 || log.deleted.length > 0 ? (
-            <div>
-              {log.added.length > 0 && (
-                <>
-                  <Button
-                    className="tw-bg-red-400"
-                    onClick={() => setOpenAdded(!openAdded)}
-                  >
-                    Added
-                  </Button>
-                  <Collapse in={openAdded}>
-                    <div>
-                      {log.added.map((x) => (
-                        <>Added: {x.title}</>
-                      ))}
-                    </div>
-                  </Collapse>
-                </>
-              )}
-              {log.deleted.length > 0 && (
-                <>
-                  <Button onClick={() => setOpenDeleted(!openDeleted)}>
-                    Deleted
-                  </Button>
-                  <Collapse in={openAdded}>
-                    <div>
-                      {log.deleted.map((x) => (
-                        <>Deleted: {x.title}</>
-                      ))}
-                    </div>
-                  </Collapse>
-                </>
-              )}
-            </div>
-          ) : (
-            <>No changes were made</>
-          )}
+          {new Date(playlistItem.videoPublishedAt).toLocaleDateString()}
         </div>
       </div>
     </div>
   );
-};
-
-export const GetFormattedDate = (isoDate: string) => {
-  return isoDate.slice(0, 19).replace("T", " ");
 };
 
 export default LogItem;

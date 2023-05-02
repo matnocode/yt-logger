@@ -3,7 +3,7 @@ import { useParams } from "react-router";
 import { getLogPaged, getPlaylist, logPlaylist } from "../../api/youtube";
 import Loading from "../../components/Loading";
 import PlaylistNotFound from "./components/PlaylistNotFound";
-import LogItem from "./components/LogItem";
+import LogItem from "./components/LogItemList";
 import PlaylistItem from "./components/PlaylistItem";
 import { Button, Pagination } from "react-bootstrap";
 import { useEffect, useState } from "react";
