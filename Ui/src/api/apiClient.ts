@@ -32,6 +32,7 @@ const getFullUrlWithParams = (
   if (!params) {
     return url;
   }
+  url = "https://localhost:5001" + url;
 
   const transform = (value: ParamTypes): string => {
     if (value === null || value === undefined) {

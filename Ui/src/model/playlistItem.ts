@@ -1,27 +1,30 @@
 export interface Playlist {
-  nextPageToken: string;
-  items: PlaylistItem[];
+  title: string;
+  refId: string;
+  itemCount: number;
+  lastLogged: string;
+  imgUrl: string;
 }
 
 export interface PlaylistItem {
-  id: string;
-  playlistId: string;
-  position: number | undefined;
-  snippet: Snippet;
-}
-
-interface Standard {
-  url: string;
-  width: number | undefined;
-  height: number | undefined;
-}
-
-export interface Thumbnail {
-  standard: Standard;
-}
-
-export interface Snippet {
-  publishedAt: string;
   title: string;
-  thumbnails: Thumbnail;
+  imgUrl: string;
+  videoOwnerChannelTitle: string;
+  videoOwnerChannelId: string;
+  videoPublishedAt: string;
+  refId: string;
+  isDeleted: boolean;
+  playlistId: number;
+}
+
+export interface Log {
+  timeStamp: string;
+  refId: string;
+  added: PlaylistItem[];
+  deleted: PlaylistItem[];
+}
+
+export interface PagedResult {
+  result: Log[];
+  pageCount: number;
 }
