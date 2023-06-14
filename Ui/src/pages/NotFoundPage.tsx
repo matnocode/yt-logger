@@ -1,3 +1,5 @@
+import React from "react";
+
 const NotFoundPage: React.FC = () => {
   return <h3 className="text-center">Page was not found</h3>;
 };

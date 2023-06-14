@@ -1,3 +1,4 @@
+import React from "react";
 import { Playlist } from "../../../model/playlistItem";
 
 interface Props {
@@ -6,9 +7,9 @@ interface Props {
 
 const PlaylistItem: React.FC<Props> = ({ playlist }) => {
   return (
-    <div className="tw-flex tw-flex-col md:tw-flex-row  tw-gap-3 tw-mt-3">
+    <div className="tw-flex tw-flex-col md:tw-flex-row">
       <img
-        className="tw-w-[50%] md:tw-max-w-[200px] md:tw-max-h-[175px]"
+        className="tw-w-[50%] md:tw-max-w-[200px] md:tw-max-h-[175px] tw-mr-2"
         src={
           playlist.imgUrl && playlist.imgUrl.length > 0
             ? playlist.imgUrl

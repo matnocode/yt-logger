@@ -19,13 +19,14 @@ namespace yt_logger.Data.Repositories
                 .Include(x => x.Added)
                 .Include(x => x.Deleted)
                 .Where(x => x.RefId == refId)
+                .Where(x => x.Deleted.Count > 0 || x.Added.Count > 0)
                 .OrderByDescending(x => x.TimeStamp)
                 .ToListAsync();
 
             return new PagedResult
             {
                 Result = allItems.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList(),
-                PageCount = allItems.Count / pageSize
+                PageCount = (allItems.Count / pageSize)+1
             };
         }
 

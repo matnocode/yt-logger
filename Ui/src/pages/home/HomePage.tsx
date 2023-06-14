@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router";
 import SearchBar from "./components/SearchBar";
+import React from "react";
 
 const HomePage: React.FC = () => {
   const nav = useNavigate();

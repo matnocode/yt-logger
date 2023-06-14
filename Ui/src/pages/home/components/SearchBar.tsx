@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Form from "react-bootstrap/Form";
 import { useNavigate } from "react-router";
 import { CusError } from "../../../model/error";
+import React from "react";
 
 const SearchBar: React.FC = () => {
   const navigate = useNavigate();
