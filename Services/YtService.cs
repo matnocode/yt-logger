@@ -59,7 +59,6 @@ namespace yt_logger.Services
             var part = new Repeatable<string>(new List<string> { "snippet", "contentDetails", "id", "status" });
 
             var request = youtubeService.PlaylistItems.List(part);
-            request.MaxResults = 100;
             request.PlaylistId = ytPlaylistId;
             if (nextPageToken != null)
                 request.PageToken = nextPageToken;

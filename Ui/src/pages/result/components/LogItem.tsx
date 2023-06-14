@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { PlaylistItem } from "../../../model/playlistItem";
-import cn from "classnames";
+import React from "react";
 
 interface LogItemProps {
   deleted?: boolean;
@@ -12,10 +12,7 @@ const LogItem: FC<LogItemProps> = ({ deleted, playlistItem }) => {
     <div className="tw-flex tw-flex-col md:tw-flex-row">
       <div className="tw-my-2">
         <img
-          className={cn("tw-max-w-[150px] tw-border-2", {
-            "tw-border-green-700": !deleted,
-            "tw-border-red-700": deleted,
-          })}
+          className="tw-max-w-[150px] tw-border-2"
           src={
             playlistItem.imgUrl && playlistItem.imgUrl.length > 0
               ? playlistItem.imgUrl

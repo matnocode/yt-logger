@@ -4,7 +4,8 @@ import HomePage from "./pages/home/HomePage";
 import Container from "./common/Container";
 import ResultPage from "./pages/result/ResultPage";
 import NotFoundPage from "./pages/NotFoundPage";
-import { ToastContainer } from "react-toastify";
+import { Toaster } from "react-hot-toast";
+import React from "react";
 
 const App = () => {
   const queryClient = new QueryClient({
@@ -12,7 +13,7 @@ const App = () => {
   });
 
   return (
-    <div>
+    <>
       <QueryClientProvider client={queryClient}>
         <Routes>
           <Route path="/" element={<Container />}>
@@ -23,9 +24,9 @@ const App = () => {
             <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>
+        <Toaster />
       </QueryClientProvider>
-      <ToastContainer />
-    </div>
+    </>
   );
 };
 
