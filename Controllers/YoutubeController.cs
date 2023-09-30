@@ -13,5 +13,11 @@ namespace yt_logger.Controllers
 
         [HttpGet]
         public async Task<ActionResult> GetLogPaged([FromQuery] GetLogPagedCommand command) => await SendRequest(command);
+
+        [HttpGet]
+        public ActionResult Ping() 
+        {
+            return Ok("Got Ping!");
+        }
     }
 }
