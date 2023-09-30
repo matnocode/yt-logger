@@ -17,7 +17,7 @@ const NavBar: React.FC = () => {
           <div onClick={() => navigate("/")}>
             <Button buttonType="no-style" className="tw-bg-red-400">
               <div className="tw-flex tw-items-center tw-gap-3 tw-mx-3">
-                <Picture src={logo} size="md" />
+                {/* <Picture src={logo} size="md" /> */}
                 <span className="tw-text-2xl tw-font-semibold">YT Logger</span>
               </div>
             </Button>
