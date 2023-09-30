@@ -1,14 +1,12 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
-import Header from "../components/Header";
+import NavBar from "../navbar/NavBar";
+import { Outlet } from "react-router";
 
 const Container: React.FC = () => {
   return (
-    <div>
-      <div className="tw-w-100 xl:tw-w-[40%] tw-m-auto container tw-min-h-screen">
-        <Header />
-        <Outlet />
-      </div>
+    <div className="tw-min-h-screen tw-container tw-mx-auto ">
+      <NavBar />
+      <Outlet />
     </div>
   );
 };

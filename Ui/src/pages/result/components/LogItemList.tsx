@@ -1,9 +1,9 @@
+import { FC, Fragment, useState } from "react";
+
+import Button from "../../../common/Button";
 import { Collapse } from "react-bootstrap";
 import { Log } from "../../../model/playlistItem";
-import { FC, Fragment, useState } from "react";
 import LogItem from "./LogItem";
-import Button from "../../../common/Button";
-import React from "react";
 
 interface Props {
   log: Log;
@@ -30,7 +30,7 @@ const LogItemList: FC<Props> = ({ log }) => {
                   Added
                 </Button>
                 <Collapse in={openAdded}>
-                  <div className="tw-flex tw-flex-col">
+                  <div className="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-4 tw-pt-2">
                     {log.added.map((x, i) => (
                       <Fragment key={`logItem-${i}`}>
                         <LogItem playlistItem={x} />
@@ -54,7 +54,7 @@ const LogItemList: FC<Props> = ({ log }) => {
                   <div>
                     {log.deleted.map((x, i) => (
                       <Fragment key={`logItem-${i}`}>
-                        <LogItem playlistItem={x} deleted />
+                        <LogItem playlistItem={x} />
                       </Fragment>
                     ))}
                   </div>
