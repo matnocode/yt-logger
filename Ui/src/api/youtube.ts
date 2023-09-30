@@ -26,7 +26,7 @@ export const getLogPaged = (
     .json<PagedResult>();
 };
 
-const url = "https://94.244.81.178:5001";
+const url = "https://94.244.81.178:5000";
 
 export const pingServer = () => {
   return fetch(`${url}/youtube/ping`);
