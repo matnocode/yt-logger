@@ -41,7 +41,10 @@ const LogItemList: FC<Props> = ({ log }) => {
             )}
             {log.deleted.length > 0 && (
               <div>
-                <Button onClick={() => setOpenDeleted(!openDeleted)}>
+                <Button
+                  buttonType="primary"
+                  onClick={() => setOpenDeleted(!openDeleted)}
+                >
                   Deleted
                 </Button>
                 <Collapse in={openDeleted}>
