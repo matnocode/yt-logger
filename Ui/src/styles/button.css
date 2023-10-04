@@ -1,0 +1,18 @@
+.customButton {
+  border: 1px solid transparent;
+  border-radius: 7px;
+  padding: 2px;
+  color: black;
+  background-color: transparent !important;
+  transition: 0.25s ease-in-out;
+}
+
+.customButton:hover {
+  background-color: rgb(15, 15, 15) !important;
+  color: white;
+}
+
+.customButton:active {
+  transition: 0.1s ease-in-out;
+  background-color: rgb(44, 44, 44) !important;
+}

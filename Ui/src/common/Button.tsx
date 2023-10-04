@@ -1,43 +1,36 @@
 import { ButtonHTMLAttributes, FC } from "react";
 
-import React from "react";
+import classNames from "classnames";
 import cn from "classnames";
 
-type buttonType = "default" | "primary" | "default-outline" | "no-style";
-type buttonWidth = "100" | "150" | "175" | "200" | "250" | "300" | "500";
-type buttonHeigth = "1" | "2" | "3" | "4" | "5";
+type Type = "tertiary" | "primary" | "secondary";
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
-  buttonType: buttonType;
-  buttonWidth?: buttonWidth;
-  buttonHeigth?: buttonHeigth;
+  buttonType: Type;
 }
 
-const Button: FC<Props> = ({
-  buttonType,
-  children,
-  buttonWidth,
-  buttonHeigth,
-  className,
-  ...rest
-}) => {
+const btnClassName =
+  "tw-border tw-rounded-md tw-px-1 tw-transition tw-duration-300 tw-font-medium";
+
+const primaryBtnClassName =
+  "tw-text-black hover:tw-text-white tw-bg-slate-200 hover:tw-bg-slate-500 active:tw-bg-slate-600";
+const tertiaryBtnClassName = "tw-text-black tw-bg-white tw-border-transparent";
+const secondaryBtnClassName =
+  "tw-text-black tw-bg-white hover:tw-bg-slate-200 active:tw-bg-slate-300";
+
+const Button: FC<Props> = ({ buttonType, children, className, ...rest }) => {
+  const btnCn = classNames(
+    btnClassName,
+    buttonType === "tertiary"
+      ? tertiaryBtnClassName
+      : buttonType === "secondary"
+      ? secondaryBtnClassName
+      : primaryBtnClassName
+  );
+
   return (
-    <button
-      className={cn("tw-font-medium tw-rounded-md tw-text-sm", {
-        "tw-text-white tw-bg-gray-600 hover:tw-bg-gray-800":
-          buttonType == "default",
-        "tw-text-black tw-bg-gray-200 hover:tw-bg-gray-300":
-          buttonType == "primary",
-        "tw-text-gray-600 hover:tw-text-white tw-bg-white hover:tw-bg-gray-400 tw-border-2 tw-border-gray-400 active:tw-bg-gray-500":
-          buttonType == "default-outline",
-        className,
-      })}
-      type="button"
-      {...rest}
-    >
-      {React.Children.map(children, (child) =>
-        React.isValidElement(child) ? React.cloneElement(child, {}) : child
-      )}
+    <button className={classNames(btnCn, className)} type="button" {...rest}>
+      {children}
     </button>
   );
 };

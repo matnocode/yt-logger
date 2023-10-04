@@ -1,6 +1,9 @@
+@import "./styles/button.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@tailwind variants;
 
 body {
   overflow-x: hidden;
