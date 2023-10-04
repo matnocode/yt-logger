@@ -1,8 +1,6 @@
 import Button from "../common/Button";
 import Dropdown from "../common/Dropdown";
 import Picture from "../components/Picture";
-import SearchBar from "../pages/home/components/SearchBar";
-import logo from "../images/logo.png";
 import { useNavigate } from "react-router";
 import { useScreen } from "../hooks/useScreen";
 

@@ -1,7 +1,6 @@
 import { ButtonHTMLAttributes, FC } from "react";
 
 import classNames from "classnames";
-import cn from "classnames";
 
 type Type = "tertiary" | "primary" | "secondary";
 

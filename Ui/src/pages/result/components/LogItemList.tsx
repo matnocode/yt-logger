@@ -22,7 +22,12 @@ const LogItemList: FC<Props> = ({ log }) => {
           <div className="tw-flex tw-flex-col tw-gap-3">
             {log.added.length > 0 && (
               <div>
-                <Button onClick={() => setOpenAdded(!openAdded)}>Added</Button>
+                <Button
+                  buttonType="primary"
+                  onClick={() => setOpenAdded(!openAdded)}
+                >
+                  Added
+                </Button>
                 <Collapse in={openAdded}>
                   <div className="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-4 tw-pt-2">
                     {log.added.map((x, i) => (
