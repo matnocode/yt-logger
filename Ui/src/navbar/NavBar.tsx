@@ -1,8 +1,6 @@
 import Button from "../common/Button";
 import Dropdown from "../common/Dropdown";
 import Picture from "../components/Picture";
-import SearchBar from "../pages/home/components/SearchBar";
-import logo from "../images/logo.png";
 import { useNavigate } from "react-router";
 import { useScreen } from "../hooks/useScreen";
 
@@ -15,7 +13,7 @@ const NavBar: React.FC = () => {
       <div className="tw-flex tw-justify-between tw-items-center">
         {!isTablet && (
           <div onClick={() => navigate("/")}>
-            <Button buttonType="no-style" className="tw-bg-red-400">
+            <Button buttonType="tertiary" className="tw-bg-red-400">
               <div className="tw-flex tw-items-center tw-gap-3 tw-mx-3">
                 {/* <Picture src={logo} size="md" /> */}
                 <span className="tw-text-2xl tw-font-semibold">YT Logger</span>
@@ -23,9 +21,7 @@ const NavBar: React.FC = () => {
             </Button>
           </div>
         )}
-        <div className="tw-w-[40%]">
-          <SearchBar />
-        </div>
+
         <div>
           <div className="tw-mr-[20px]">
             <Dropdown left actions={[{ label: "Login", action: () => {} }]}>

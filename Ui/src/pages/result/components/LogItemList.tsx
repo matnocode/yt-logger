@@ -4,6 +4,7 @@ import Button from "../../../common/Button";
 import { Collapse } from "react-bootstrap";
 import { Log } from "../../../model/playlistItem";
 import LogItem from "./LogItem";
+import { getDate } from "../../../utils/date";
 
 interface Props {
   log: Log;
@@ -23,8 +24,6 @@ const LogItemList: FC<Props> = ({ log }) => {
               <div>
                 <Button
                   buttonType="primary"
-                  buttonWidth="150"
-                  buttonHeigth="2"
                   onClick={() => setOpenAdded(!openAdded)}
                 >
                   Added
@@ -44,8 +43,6 @@ const LogItemList: FC<Props> = ({ log }) => {
               <div>
                 <Button
                   buttonType="primary"
-                  buttonWidth="150"
-                  buttonHeigth="2"
                   onClick={() => setOpenDeleted(!openDeleted)}
                 >
                   Deleted
@@ -67,22 +64,5 @@ const LogItemList: FC<Props> = ({ log }) => {
     </div>
   );
 };
-
-export const getDate = (date: Date) =>
-  `${date.getFullYear()}-${
-    date.getUTCMonth() + 1 < 10
-      ? `0${date.getUTCMonth() + 1}`
-      : date.getUTCMonth() + 1
-  }-${
-    date.getUTCDate() < 10 ? `0${date.getUTCDate()}` : date.getUTCDate()
-  } ${date.getUTCHours()}:${
-    date.getUTCMinutes() < 10
-      ? `0${date.getUTCMinutes()}`
-      : date.getUTCMinutes()
-  }:${
-    date.getUTCSeconds() < 10
-      ? `0${date.getUTCSeconds()}`
-      : date.getUTCSeconds()
-  }`;
 
 export default LogItemList;
