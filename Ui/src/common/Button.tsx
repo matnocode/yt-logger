@@ -17,7 +17,13 @@ const tertiaryBtnClassName = "tw-text-black tw-bg-white tw-border-transparent";
 const secondaryBtnClassName =
   "tw-text-black tw-bg-white hover:tw-bg-slate-200 active:tw-bg-slate-300";
 
-const Button: FC<Props> = ({ buttonType, children, className, ...rest }) => {
+const Button: FC<Props> = ({
+  buttonType,
+  children,
+  className,
+  disabled,
+  ...rest
+}) => {
   const btnCn = classNames(
     btnClassName,
     buttonType === "tertiary"
@@ -27,8 +33,19 @@ const Button: FC<Props> = ({ buttonType, children, className, ...rest }) => {
       : primaryBtnClassName
   );
 
+  if (disabled) rest.onClick = undefined;
+
   return (
-    <button className={classNames(btnCn, className)} type="button" {...rest}>
+    <button
+      className={classNames(
+        btnCn,
+        disabled &&
+          "tw-opacity-80 tw-cursor-not-allowed hover:tw-bg-inherit active:tw-bg-inherit",
+        className
+      )}
+      type="button"
+      {...rest}
+    >
       {children}
     </button>
   );

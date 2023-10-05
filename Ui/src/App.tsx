@@ -1,11 +1,11 @@
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Route, Routes } from "react-router";
-import HomePage from "./pages/home/HomePage";
+
 import Container from "./common/Container";
-import ResultPage from "./pages/result/ResultPage";
+import HomePage from "./pages/home/HomePage";
 import NotFoundPage from "./pages/NotFoundPage";
+import ResultPage from "./pages/result/ResultPage";
 import { Toaster } from "react-hot-toast";
-import React from "react";
 
 const App = () => {
   const queryClient = new QueryClient({

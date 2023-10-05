@@ -5,12 +5,12 @@ import { useEffect, useState } from "react";
 import BaseContainer from "../../common/BaseContainer";
 import Button from "../../common/Button";
 import CustomPaginationButton from "../../common/CustomPaginationButton";
-import Loading from "../../components/Loading";
 import LogItemList from "./components/LogItemList";
 import { Pagination } from "react-bootstrap";
 import PlaylistHeader from "./components/PlaylistHeader";
 import PlaylistItem from "./components/PlaylistItem";
 import PlaylistNotFound from "./components/PlaylistNotFound";
+import PlaylistSearchResults from "./components/PlaylistSearchResults";
 import React from "react";
 import { toast } from "react-hot-toast";
 import { useParams } from "react-router";
@@ -19,6 +19,7 @@ import { useQuery } from "react-query";
 const ResultPage: React.FC = () => {
   const { playlistId } = useParams();
   const [currentPage, setCurrentPage] = useState(1);
+  const [isPagedDataRefetching, setIsPagedDataRefetching] = useState(false);
 
   const {
     data,
@@ -29,7 +30,11 @@ const ResultPage: React.FC = () => {
     enabled: playlistId !== undefined,
   });
 
-  const { data: pagedData, refetch } = useQuery(
+  const {
+    data: pagedData,
+    isLoading: isPagedDataLoading,
+    refetch,
+  } = useQuery(
     "paged",
     () => getLogPaged(currentPage ?? 1, 5, playlistId ?? ""),
     {
@@ -38,8 +43,10 @@ const ResultPage: React.FC = () => {
   );
 
   const handleLogClick = () => {
+    setIsPagedDataRefetching(true);
     toast.promise(
       logPlaylist(playlistId ?? "").then(() => {
+        setIsPagedDataRefetching(false);
         refetch();
         refetchPlaylist();
       }),
@@ -61,13 +68,16 @@ const ResultPage: React.FC = () => {
     refetch();
   }, [currentPage]);
 
-  if (isLoading) return <Loading />;
-  if (!data) return <PlaylistNotFound playlistId={playlistId ?? ""} />;
   return (
     <div className="tw-space-y-3 tw-mt-3">
       <BaseContainer className="md:tw-px-4 md:tw-py-2">
         <PlaylistHeader handleLogClick={handleLogClick} />
-        <PlaylistItem playlist={data} />
+        <div className="tw-grid tw-grid-cols-[1fr,5fr] tw-gap-2">
+          <PlaylistItem playlist={data} isLoading={isLoading} />
+          <PlaylistSearchResults
+            isLoading={isPagedDataLoading || isPagedDataRefetching}
+          />
+        </div>
       </BaseContainer>
       <div>
         {pagedData?.result.map((log, i) => (
@@ -80,7 +90,7 @@ const ResultPage: React.FC = () => {
         ) && (
           <div className="tw-flex tw-justify-center tw-font-bold tw-py-2">
             There was no changes made since{" "}
-            {getYearDate(new Date(data.lastLogged))}
+            {getYearDate(new Date(data?.lastLogged ?? ""))}
           </div>
         )}
         {/* {(pagedData?.pageCount ?? 0) > 1 && (
