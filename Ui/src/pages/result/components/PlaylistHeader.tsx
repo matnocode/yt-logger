@@ -13,7 +13,7 @@ const PlaylistHeader: FC<Props> = ({ handleLogClick }) => {
       <Button
         className="tw-p-1 tw-py-2 tw-mb-2"
         buttonType="secondary"
-        // onClick={handleLogClick}
+        onClick={handleLogClick}
       >
         Log playlist
       </Button>

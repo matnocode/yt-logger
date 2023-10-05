@@ -6,7 +6,7 @@ import BaseContainer from "../../common/BaseContainer";
 import Button from "../../common/Button";
 import CustomPaginationButton from "../../common/CustomPaginationButton";
 import Loading from "../../components/Loading";
-import LogItem from "./components/LogItemList";
+import LogItemList from "./components/LogItemList";
 import { Pagination } from "react-bootstrap";
 import PlaylistHeader from "./components/PlaylistHeader";
 import PlaylistItem from "./components/PlaylistItem";
@@ -69,14 +69,14 @@ const ResultPage: React.FC = () => {
         <PlaylistHeader handleLogClick={handleLogClick} />
         <PlaylistItem playlist={data} />
       </BaseContainer>
-      <BaseContainer>
+      <div>
         {pagedData?.result.map((log, i) => (
           <div key={`log-${i}`}>
-            <LogItem log={log} />
+            <LogItemList log={log} />
           </div>
         ))}
         {pagedData?.result.every(
-          (x) => x.added.length == 0 && x.deleted.length == 0
+          (x) => x.added.length === 0 && x.deleted.length === 0
         ) && (
           <div className="tw-flex tw-justify-center tw-font-bold tw-py-2">
             There was no changes made since{" "}
@@ -110,7 +110,7 @@ const ResultPage: React.FC = () => {
             </CustomPaginationButton>
           </Pagination>
         )} */}
-      </BaseContainer>
+      </div>
     </div>
   );
 };
