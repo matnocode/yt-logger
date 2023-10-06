@@ -1,6 +1,6 @@
+import { createRef, useEffect, useMemo, useRef, useState } from "react";
 import { getDate, getYearDate } from "../../utils/date";
 import { getLogPaged, getPlaylist, logPlaylist } from "../../api/youtube";
-import { useEffect, useState } from "react";
 
 import BaseContainer from "../../common/BaseContainer";
 import Button from "../../common/Button";
@@ -12,6 +12,7 @@ import PlaylistItem from "./components/PlaylistItem";
 import PlaylistNotFound from "./components/PlaylistNotFound";
 import PlaylistSearchResults from "./components/PlaylistSearchResults";
 import React from "react";
+import { sleep } from "react-query/types/core/utils";
 import { toast } from "react-hot-toast";
 import { useParams } from "react-router";
 import { useQuery } from "react-query";
@@ -20,6 +21,7 @@ const ResultPage: React.FC = () => {
   const { playlistId } = useParams();
   const [currentPage, setCurrentPage] = useState(1);
   const [isPagedDataRefetching, setIsPagedDataRefetching] = useState(false);
+  const [selectedLog, setSelectedLog] = useState<number>();
 
   const {
     data,
@@ -68,6 +70,19 @@ const ResultPage: React.FC = () => {
     refetch();
   }, [currentPage]);
 
+  useEffect(() => {
+    if (selectedLog) {
+      const targetDiv = document.getElementById(String(selectedLog));
+      if (targetDiv) {
+        targetDiv.scrollIntoView({ behavior: "smooth" });
+        targetDiv.classList.add("onActive");
+        setTimeout(() => {
+          targetDiv.classList.remove("onActive");
+        }, 1000);
+      }
+    }
+  }, [selectedLog]);
+
   return (
     <div className="tw-space-y-3 tw-mt-3">
       <BaseContainer className="md:tw-px-4 md:tw-py-2">
@@ -75,13 +90,19 @@ const ResultPage: React.FC = () => {
         <div className="tw-grid tw-grid-cols-[1fr,5fr] tw-gap-2">
           <PlaylistItem playlist={data} isLoading={isLoading} />
           <PlaylistSearchResults
+            pagedData={pagedData}
             isLoading={isPagedDataLoading || isPagedDataRefetching}
+            setLog={(id) => setSelectedLog(id)}
           />
         </div>
       </BaseContainer>
       <div>
         {pagedData?.result.map((log, i) => (
-          <div key={`log-${i}`}>
+          <div
+            id={String(log.id)}
+            key={`log-${i}`}
+            className="tw-border tw-border-transparent"
+          >
             <LogItemList log={log} />
           </div>
         ))}
