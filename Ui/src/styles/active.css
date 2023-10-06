@@ -1,0 +1,13 @@
+@keyframes ab {
+  from {
+    border-color: initial;
+    border: 1px solid transparent;
+  }
+  to {
+    border-color: rgb(151, 47, 47);
+  }
+}
+
+.onActive {
+  animation: ab 1s alternate-reverse;
+}

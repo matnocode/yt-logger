@@ -1,0 +1,12 @@
+@keyframes colorAlternation-white {
+  from {
+    background-color: white;
+  }
+  to {
+    background-color: rgba(156, 178, 201, 0.24);
+  }
+}
+
+.loader-white {
+  animation: colorAlternation-white 4s infinite alternate;
+}
