@@ -85,9 +85,9 @@ const ResultPage: React.FC = () => {
 
   return (
     <div className="tw-space-y-3 tw-mt-3">
-      <BaseContainer className="md:tw-px-4 md:tw-py-2">
+      <BaseContainer className="md:tw-px-4 tw-py-2">
         <PlaylistHeader handleLogClick={handleLogClick} />
-        <div className="tw-grid tw-grid-cols-[1fr,5fr] tw-gap-2">
+        <div className="tw-grid md:tw-grid-cols-[1fr,5fr] tw-gap-2 tw-mt-2">
           <PlaylistItem playlist={data} isLoading={isLoading} />
           <PlaylistSearchResults
             pagedData={pagedData}
