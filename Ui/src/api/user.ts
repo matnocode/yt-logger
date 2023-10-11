@@ -1,3 +1,4 @@
+import { User } from "../model/user";
 import { apiClient } from "./apiClient";
 
 export const getUser = () =>
