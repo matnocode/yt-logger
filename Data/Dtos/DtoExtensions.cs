@@ -15,5 +15,14 @@ namespace yt_logger.Data.Dtos
                 ImgUrl = playlist.ImgUrl ?? ""
             };
         }
+
+        public static UserDto ToDto(this User user)
+        {
+            return new UserDto
+            {
+                Id = user.Id,
+                Email = user.Email
+            };
+        }
     }
 }
