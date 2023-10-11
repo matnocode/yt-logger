@@ -3,11 +3,11 @@ import {
   PropsWithChildren,
   createContext,
   useContext,
-  useEffect,
   useMemo,
   useState,
 } from "react";
 
+import { User } from "../model/user";
 import { getUser } from "../api/user";
 
 interface Props {
