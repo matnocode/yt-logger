@@ -83,6 +83,7 @@ const callApi = (
     body: options.json ? JSON.stringify(options.json) : options.body,
     headers,
     signal: options.signal,
+    credentials: "include",
   };
 
   const promise = fetch(getFullUrlWithParams(url, options.params), request);

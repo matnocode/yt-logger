@@ -1,5 +1,6 @@
 @import "./styles/loader.css";
 @import "./styles/active.css";
+@import "./styles/love.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

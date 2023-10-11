@@ -6,7 +6,7 @@ namespace yt_logger.Data.Repositories
 {
     public class AsyncRepository<T> : IAsyncRepository<T> where T : BaseEntity
     {
-        private readonly YtLoggerDbContext context;
+        protected readonly YtLoggerDbContext context;
 
         public AsyncRepository(YtLoggerDbContext context)
         {

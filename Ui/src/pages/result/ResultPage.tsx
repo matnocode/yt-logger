@@ -1,22 +1,18 @@
-import { createRef, useEffect, useMemo, useRef, useState } from "react";
-import { getDate, getYearDate } from "../../utils/date";
 import { getLogPaged, getPlaylist, logPlaylist } from "../../api/youtube";
+import { useEffect, useState } from "react";
 
 import BaseContainer from "../../common/BaseContainer";
-import Button from "../../common/Button";
-import CustomPaginationButton from "../../common/CustomPaginationButton";
 import LogItemList from "./components/LogItemList";
-import { Pagination } from "react-bootstrap";
 import PlaylistHeader from "./components/PlaylistHeader";
 import PlaylistItem from "./components/PlaylistItem";
-import PlaylistNotFound from "./components/PlaylistNotFound";
 import PlaylistSearchResults from "./components/PlaylistSearchResults";
 import React from "react";
-import { sleep } from "react-query/types/core/utils";
+import { getYearDate } from "../../utils/date";
 import { toast } from "react-hot-toast";
 import { useParams } from "react-router";
 import { useQuery } from "react-query";
 
+//need to make context here
 const ResultPage: React.FC = () => {
   const { playlistId } = useParams();
   const [currentPage, setCurrentPage] = useState(1);
@@ -97,6 +93,7 @@ const ResultPage: React.FC = () => {
         </div>
       </BaseContainer>
       <div>
+        {/* move to separte file */}
         {pagedData?.result.map((log, i) => (
           <div
             id={String(log.id)}
