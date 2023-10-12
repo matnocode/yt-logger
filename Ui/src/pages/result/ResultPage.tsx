@@ -42,18 +42,19 @@ const ResultPage: React.FC = () => {
 
   const handleLogClick = () => {
     setIsPagedDataRefetching(true);
-    toast.promise(
-      logPlaylist(playlistId ?? "").then(() => {
+    toast.promise(logPlaylist(playlistId ?? ""), {
+      success: (e) => {
         setIsPagedDataRefetching(false);
         refetch();
         refetchPlaylist();
-      }),
-      {
-        success: "Logged",
-        error: "Error",
-        loading: "Loading...",
-      }
-    );
+        return "Logged";
+      },
+      error: (e) => {
+        setIsPagedDataRefetching(false);
+        return "Limit reached or playlist not found";
+      },
+      loading: "Loading...",
+    });
   };
 
   const handlePaginationOnClick = (setNew: number) => {

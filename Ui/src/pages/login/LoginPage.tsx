@@ -68,19 +68,19 @@ const LoginPage: FC = () => {
             >
               {isLogin ? "Login" : "Register"}
             </Button>
-            <Button
+            {/* <Button
               buttonType="tertiary"
               className="tw-font-normal tw-text-slate-600 hover:tw-text-slate-800"
               onClick={() => setIsLogin((prev) => !prev)}
             >
               {isLogin ? "Dont have an account?" : "Already have an account?"}
-            </Button>
-            {/* <Button
+            </Button> */}
+            <Button
               buttonType="tertiary"
               className="tw-font-normal tw-text-slate-600 hover:tw-text-slate-800 tw-text-left"
             >
               We do not accept new accounts at the moment
-            </Button> */}
+            </Button>
           </form>
         </BaseContainer>
       </div>
