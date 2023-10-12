@@ -8,7 +8,7 @@ interface Props {
   className?: string;
   imgClassName?: string;
   size?: Size;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 
 const Picture: FC<Props> = ({
@@ -21,7 +21,7 @@ const Picture: FC<Props> = ({
   const sz =
     size == "md" ? "tw-w-[48px]" : size == "lg" ? "tw-w-[96px]" : "tw-w-[24px]";
   return (
-    <div onClick={() => onClick?.()}>
+    <div onClick={(e) => onClick?.(e)}>
       <div className={classNames(className)}>
         <img
           className={classNames("tw-rounded-md", imgClassName, sz)}

@@ -23,7 +23,7 @@ namespace yt_logger.Services
         public async Task LogPlaylist(string refId)
         {
             var ytPlaylist = await ytService.GetYtPlaylistAsync(refId) ?? throw new BadHttpRequestException("no playlist");
-            var dbPlaylist = await playlistRepository.GetByRefIdAsync(refId) ?? throw new BadHttpRequestException("no playlist in db!");
+            var dbPlaylist = await ValidateDbPlaylist(refId);
 
             var ytPlaylistItems = await ytService.GetYtPlaylistItemsAsync(refId) ?? throw new BadHttpRequestException("no playlist");
             var playlistItems = new List<PlaylistItemDb>();
@@ -43,7 +43,7 @@ namespace yt_logger.Services
             await AddEditPlaylistVideos(dbPlaylist.PlaylistItems?.ToList() ?? new(), playlistItems, dbPlaylist);
         }
 
-        async Task AddEditPlaylistVideos(List<PlaylistItemDb> dbItems, List<PlaylistItemDb> newItems, Playlist playlist)
+        private async Task AddEditPlaylistVideos(List<PlaylistItemDb> dbItems, List<PlaylistItemDb> newItems, Playlist playlist)
         {
             playlist.LastLogDate = DateTime.UtcNow;
 
@@ -73,6 +73,18 @@ namespace yt_logger.Services
             }
 
             await playlistRepository.UpdateAsync(playlist);
+        }
+
+        private async Task<Playlist> ValidateDbPlaylist(string refId)
+        {
+            var dbPlaylist = await playlistRepository.GetByRefIdAsync(refId) ?? throw new BadHttpRequestException("no playlist");
+
+            //check user
+            //if not logged, 1 log request per day
+            if (dbPlaylist.LastLogDate >= DateTime.UtcNow.AddDays(-1))
+                throw new BadHttpRequestException("log limit for the day reached for this playlist");
+
+            return dbPlaylist;
         }
     }
 }

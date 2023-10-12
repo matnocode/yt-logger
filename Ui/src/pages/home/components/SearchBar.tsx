@@ -55,9 +55,10 @@ const SearchBar: React.FC<Props> = ({ showErrorMsg }) => {
             onChange={(e) => {
               setValue(e.target.value);
             }}
+            placeholder="Search..."
           />
           <Picture
-            className="tw-border tw-p-2.5 tw-rounded-lg hover:tw-bg-slate-50 tw-cursor-pointer tw-shadow"
+            className="tw-bg-white tw-border tw-p-2.5 tw-rounded-lg hover:tw-bg-slate-50 tw-cursor-pointer tw-shadow"
             src={search}
             onClick={() => {
               handleSubmit(undefined);

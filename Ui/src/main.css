@@ -1,3 +1,6 @@
+@import "./styles/loader.css";
+@import "./styles/active.css";
+@import "./styles/love.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -5,4 +8,19 @@
 
 body {
   overflow-x: hidden;
+}
+
+table {
+  width: 100%;
+}
+td {
+  padding: 4px;
+  text-align: left;
+  white-space: normal;
+  text-wrap: wrap;
+}
+
+tr:hover td {
+  background-color: rgba(112, 128, 144, 0.11);
+  transition: 0.12s;
 }

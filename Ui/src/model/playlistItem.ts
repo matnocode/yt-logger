@@ -18,6 +18,7 @@ export interface PlaylistItem {
 }
 
 export interface Log {
+  id: number;
   timeStamp: string;
   refId: string;
   added: PlaylistItem[];

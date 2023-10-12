@@ -1,6 +1,8 @@
-﻿namespace yt_logger
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+
+namespace yt_logger
 {
-    //use this to add services //fixx
+    //use this to add services
     public class ConfigureServices
     {
         private readonly IServiceCollection services;

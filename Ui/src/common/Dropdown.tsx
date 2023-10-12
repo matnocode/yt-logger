@@ -1,16 +1,12 @@
 import { PropsWithChildren, useEffect, useRef, useState } from "react";
-import React, { ReactElement, useMemo } from "react";
 
 import { FC } from "react";
 import classNames from "classnames";
 
 interface Props extends PropsWithChildren {
   actions?: DropdownAction[];
-  containerClassName?: string;
-  buttonContainerClassName?: string;
-  buttonClassName?: string;
-  center?: boolean;
-  left?: boolean;
+  childrenContainerClassName?: string;
+  actionsContainerClassName?: string;
 }
 
 export interface DropdownAction {
@@ -18,31 +14,14 @@ export interface DropdownAction {
   action: () => void;
 }
 
-//fix
 const Dropdown: FC<Props> = ({
   actions,
-  containerClassName,
-  buttonContainerClassName,
-  buttonClassName,
-  center,
-  left,
+  childrenContainerClassName,
+  actionsContainerClassName,
   children,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
-
-  const childrenWithOnClick = useMemo(
-    () =>
-      React.Children.map(
-        children as ReactElement,
-        (child: React.ReactElement) => {
-          return React.cloneElement(child, {
-            onClick: () => setVisible((prev) => !prev),
-          });
-        }
-      ),
-    [children]
-  );
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -56,37 +35,33 @@ const Dropdown: FC<Props> = ({
 
   return (
     <div ref={ref}>
-      {!!childrenWithOnClick ? (
-        childrenWithOnClick
-      ) : (
-        <button onClick={() => setVisible((prev) => !prev)}>a</button>
-      )}
       <div
-        className={classNames(
-          "tw-absolute tw-z-10 tw-bg-white tw-divide-y tw-divide-gray-100 tw-rounded-lg tw-shadow tw-flex",
-          center && "",
-          left && "",
-          containerClassName,
-          !visible && "tw-hidden"
-        )}
+        className={classNames(childrenContainerClassName)}
+        onClick={() => setVisible(!visible)}
       >
-        {actions?.map((x, i) => (
-          <div
-            key={`${x.label}${i}`}
-            className={classNames(
-              " hover:tw-bg-slate-100 tw-bg-slate-50 tw-text-black",
-              buttonContainerClassName
-            )}
-          >
-            <button
-              className={classNames("", buttonClassName)}
-              onClick={() => x.action()}
+        {children}
+      </div>
+      {visible && (
+        <div
+          className={classNames(
+            "tw-bg-white tw-border tw-absolute",
+            actionsContainerClassName
+          )}
+        >
+          {actions?.map((x, i) => (
+            <div
+              key={`dropdownItem-${i}`}
+              onClick={() => {
+                setVisible(false);
+                x.action();
+              }}
+              className="hover:tw-bg-slate-100 tw-cursor-pointer tw-p-2"
             >
               {x.label}
-            </button>
-          </div>
-        ))}
-      </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
