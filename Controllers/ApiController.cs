@@ -13,7 +13,6 @@ namespace yt_logger.Controllers
 
         protected async Task<ActionResult> SendRequest<TCommand>(IRequest<TCommand> request)
         {
-            var a = Request.Cookies[StaticClasses.SessionIdCookieValue];
             var validSession = await mediator.Send(new HandleSessionCommand() { SessionId = Request.Cookies[StaticClasses.SessionIdCookieValue], ExpirationDate = DateTime.Parse(Request.Cookies[StaticClasses.SessionExpiresCookieValue]) });
             if (!validSession)
                 throw new UnauthorizedAccessException();
@@ -45,7 +44,7 @@ namespace yt_logger.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(e.Message);
+                throw e;
             }
         }
 
