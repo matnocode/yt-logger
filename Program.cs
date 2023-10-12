@@ -38,7 +38,14 @@ namespace yt_logger
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials());
-
+            }
+            else
+            {
+                app.UseCors(options => options
+                .WithOrigins("https://ylogger.vercel.app")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials());
             }
 
             app.UseHttpsRedirection();
