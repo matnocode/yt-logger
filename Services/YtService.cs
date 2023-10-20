@@ -59,6 +59,10 @@ namespace yt_logger.Services
             var part = new Repeatable<string>(new List<string> { "snippet", "contentDetails", "id", "status" });
 
             var request = youtubeService.PlaylistItems.List(part);
+
+            //max results 0-50, default is 5
+            request.MaxResults = 50;
+
             request.PlaylistId = ytPlaylistId;
             if (nextPageToken != null)
                 request.PageToken = nextPageToken;
@@ -67,9 +71,7 @@ namespace yt_logger.Services
 
             if (playlistItemsResponse.Items.Count <= 0) throw new BadHttpRequestException("playlist not found");
 
-            var playlistItems = playlistItemsResponse.Items;
-
-            return new YoutubePlaylistItemResponse { Items = playlistItems.ToList(), NextPageToken = playlistItemsResponse.NextPageToken };
+            return new YoutubePlaylistItemResponse { Items = playlistItemsResponse.Items.ToList(), NextPageToken = playlistItemsResponse.NextPageToken };
         }
     }
 }

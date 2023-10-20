@@ -2,16 +2,23 @@ import { FC } from "react";
 
 interface Props extends React.SVGAttributes<object> {
   checked: boolean;
+  disabled?: boolean;
   onCheckedChange: (v: boolean) => void;
 }
 
-const LoveCheckBox: FC<Props> = ({ checked, onCheckedChange, ...props }) => {
+const LoveCheckBox: FC<Props> = ({
+  checked,
+  disabled,
+  onCheckedChange,
+  ...props
+}) => {
   return (
     <label className="loveIconContainer">
       <input
         type="checkbox"
         checked={checked}
         onChange={(e) => onCheckedChange(e.target.checked)}
+        disabled={disabled}
       />
       <svg
         version="1.0"
