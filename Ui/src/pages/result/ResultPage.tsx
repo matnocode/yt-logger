@@ -81,9 +81,13 @@ const ResultPage: React.FC = () => {
   }, [selectedLog]);
 
   return (
-    <div className="tw-space-y-3 tw-mt-3">
+    <div className="tw-space-y-3 tw-my-3">
       <BaseContainer className="md:tw-px-4 tw-py-2">
-        <PlaylistHeader handleLogClick={handleLogClick} />
+        <PlaylistHeader
+          handleLogClick={handleLogClick}
+          isLoading={isPagedDataLoading || isPagedDataRefetching}
+          isValid={!!data}
+        />
         <div className="tw-grid md:tw-grid-cols-[1fr,5fr] tw-gap-2 tw-mt-2">
           <PlaylistItem playlist={data} isLoading={isLoading} />
           <PlaylistSearchResults

@@ -10,11 +10,14 @@ import search from "../../../images/search.png";
 
 interface Props {
   handleLogClick: () => void;
-  isLoading?: boolean;
+  isValid: boolean;
+  isLoading: boolean;
 }
 
-const PlaylistHeader: FC<Props> = ({ handleLogClick, isLoading }) => {
+const PlaylistHeader: FC<Props> = ({ handleLogClick, isLoading, isValid }) => {
   const [loved, setLoved] = useState(false);
+  // const disabled = isLoading || !isValid;
+  const disabled = false;
 
   return (
     <div className="tw-grid tw-grid-cols-1 md:tw-grid-cols-[1fr,5fr] tw-gap-2 tw-items-center">
@@ -22,19 +25,21 @@ const PlaylistHeader: FC<Props> = ({ handleLogClick, isLoading }) => {
         className="tw-px-1 tw-py-2"
         buttonType="secondary"
         onClick={handleLogClick}
-        disabled={isLoading}
+        disabled={disabled}
       >
-        {!isLoading ? "Log playlist" : <Loader svgProps={{ height: "10px" }} />}
+        {!isLoading ? "Log Playlist" : <Loader svgProps={{ height: "10px" }} />}
       </Button>
       <div>
         <Search
           onSubmit={(v) => {}}
           className="tw-flex tw-flex-col md:tw-flex-row tw-items-center tw-gap-3"
           placeholder="Search for a logged item"
+          disabled={disabled}
         >
           <FormControl
             className="tw-border tw-px-2 tw-py-1 hover:tw-bg-slate-50"
             type="date"
+            disabled={disabled}
           />
           <button type="submit">
             <Picture
@@ -44,6 +49,7 @@ const PlaylistHeader: FC<Props> = ({ handleLogClick, isLoading }) => {
           </button>
           <LoveCheckBox
             checked={loved}
+            disabled={disabled}
             onCheckedChange={(v) => setLoved(v)}
             className="!tw-w-[30px]"
           />

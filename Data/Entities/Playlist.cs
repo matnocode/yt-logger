@@ -7,7 +7,7 @@ namespace yt_logger.Data.Entities
         public string Title { get; set; }
         [Key]
         public string RefId { get; set; }
-        public DateTime LastLogDate { get; set; }
+        public DateTime? LastLogDate { get; set; }
         public string? ImgUrl { get; set; }//at first wont have
 
         public List<PlaylistItem> PlaylistItems { get; } = new List<PlaylistItem>();
