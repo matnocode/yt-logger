@@ -17,7 +17,7 @@ const LogItemTable: FC<Props> = ({ logItems, className }) => {
           <th className="tw-hidden md:tw-table-cell" />
           <th className="hover:tw-opacity-70 tw-cursor-pointer">Title</th>
           <th className="hover:tw-opacity-70 tw-cursor-pointer">Channel</th>
-          <th className="hover:tw-opacity-70 tw-cursor-pointer">Year</th>
+          <th className="hover:tw-opacity-70 tw-cursor-pointer">Uploaded</th>
         </tr>
       </thead>
       <tbody className="tw-bg-white tw-border">

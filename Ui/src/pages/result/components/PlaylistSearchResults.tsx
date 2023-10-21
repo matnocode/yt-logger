@@ -1,5 +1,6 @@
 import { FC } from "react";
 import { PagedResult } from "../../../model/playlistItem";
+import Pagination from "../../../common/Pagination";
 import classNames from "classnames";
 import { getYearDate } from "../../../utils/date";
 
@@ -39,6 +40,9 @@ const PlaylistSearchResults: FC<Props> = ({ isLoading, pagedData, setLog }) => {
           ))}
         </tbody>
       </table>
+      {pagedData && pagedData.result?.length > 0 && (
+        <Pagination data={pagedData} />
+      )}
     </div>
   );
 };
