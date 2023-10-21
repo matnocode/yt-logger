@@ -72,9 +72,9 @@ const ResultPage: React.FC = () => {
     }
   }, [selectedLog]);
 
-  useEffect(() => {
-    refetch();
-  }, [getPageSize, getPage]);
+  // useEffect(() => {
+  //   refetch();
+  // }, [getPageSize, getPage]);
 
   return (
     <div className="tw-space-y-3 tw-my-3">
