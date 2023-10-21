@@ -9,7 +9,7 @@ namespace yt_logger.Data.Dtos
             return new PlaylistDto
             {
                 ItemCount = playlist.PlaylistItems == null ? 0 : playlist.PlaylistItems.Count,
-                LastLogged = playlist.LastLogDate.Value,
+                LastLogged = playlist.LastLogDate,
                 RefId = playlist.RefId,
                 Title = playlist.Title,
                 ImgUrl = playlist.ImgUrl ?? ""

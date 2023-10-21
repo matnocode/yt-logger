@@ -11,12 +11,13 @@ import { getYearDate } from "../../utils/date";
 import { toast } from "react-hot-toast";
 import { useParams } from "react-router";
 import { useQuery } from "react-query";
+import useUrlParams from "../../hooks/useUrlParams";
 
 //need to make context here
 const ResultPage: React.FC = () => {
   const { playlistId } = useParams();
-  const [currentPage, setCurrentPage] = useState(1);
   const [isPagedDataRefetching, setIsPagedDataRefetching] = useState(false);
+  const { getPage, getPageSize } = useUrlParams();
   const [selectedLog, setSelectedLog] = useState<number>();
 
   const {
@@ -33,8 +34,9 @@ const ResultPage: React.FC = () => {
     isLoading: isPagedDataLoading,
     refetch,
   } = useQuery(
-    "paged",
-    () => getLogPaged(currentPage ?? 1, 5, playlistId ?? ""),
+    [getPageSize, getPage],
+    () =>
+      getLogPaged(Number(getPage()), Number(getPageSize()), playlistId ?? ""),
     {
       enabled: data !== undefined && !isLoading && isSuccess,
     }
@@ -57,16 +59,6 @@ const ResultPage: React.FC = () => {
     });
   };
 
-  const handlePaginationOnClick = (setNew: number) => {
-    if (!pagedData) return;
-    if (setNew <= 0 || setNew > pagedData.pageCount) return;
-    setCurrentPage(setNew);
-  };
-
-  useEffect(() => {
-    refetch();
-  }, [currentPage]);
-
   useEffect(() => {
     if (selectedLog) {
       const targetDiv = document.getElementById(String(selectedLog));
@@ -79,6 +71,10 @@ const ResultPage: React.FC = () => {
       }
     }
   }, [selectedLog]);
+
+  useEffect(() => {
+    refetch();
+  }, [getPageSize, getPage]);
 
   return (
     <div className="tw-space-y-3 tw-my-3">
@@ -116,33 +112,6 @@ const ResultPage: React.FC = () => {
             {getYearDate(new Date(data?.lastLogged ?? ""))}
           </div>
         )}
-        {/* {(pagedData?.pageCount ?? 0) > 1 && (
-          <Pagination className="tw-gap-1 !tw-bg-white">
-            <CustomPaginationButton
-              disabled={currentPage === 1}
-              onClick={() => handlePaginationOnClick(currentPage - 1)}
-            >
-              {"<"}
-            </CustomPaginationButton>
-            {[
-              ...Array(pagedData?.pageCount == 0 ? 1 : pagedData?.pageCount),
-            ].map((_, i) => (
-              <CustomPaginationButton
-                active={i === currentPage - 1}
-                disabled={i === currentPage - 1}
-                onClick={() => handlePaginationOnClick(i + 1)}
-              >
-                {i + 1}
-              </CustomPaginationButton>
-            ))}
-            <CustomPaginationButton
-              onClick={() => handlePaginationOnClick(currentPage + 1)}
-              disabled={currentPage === pagedData?.pageCount}
-            >
-              {">"}
-            </CustomPaginationButton>
-          </Pagination>
-        )} */}
       </div>
     </div>
   );
