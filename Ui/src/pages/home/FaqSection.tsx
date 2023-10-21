@@ -1,30 +1,35 @@
-import { FC } from "react";
+import { FC, useState } from "react";
+
 import FaqItem from "./components/FaqItem";
+import Loader from "../../common/Loader";
 import Picture from "../../components/Picture";
+import StatusCircle from "../../common/StatusCircle";
 import { pingServer } from "../../api/youtube";
 import search from "../../images/search.png";
-import toast from "react-hot-toast";
+import { useQuery } from "react-query";
 
 const FaqSection: FC = () => {
+  const { isSuccess, isLoading } = useQuery("ping-server", () => pingServer(), {
+    retry: false,
+    staleTime: 2000,
+  });
+
   return (
     <div className="tw-border-t lg:tw-border-l lg:tw-border-t-0 tw-border-gray-300">
       <div className="tw-flex tw-justify-center tw-gap-6 tw-pb-4">
         <div className="tw-text-center tw-text-4xl tw-py-2">FAQ</div>
-        <div
-          className="tw-border tw-bg-gray-200 tw-text-black hover:tw-text-white hover:tw-bg-gray-500 hover:tw-cursor-pointer
-         tw-items-center tw-flex tw-rounded-xl"
-          onClick={() => {
-            toast.promise(pingServer(), {
-              error: "not working",
-              loading: "sending",
-              success: (e) => {
-                let a = e.json().then((x) => x);
-                return <>{a}</>;
-              },
-            });
-          }}
-        >
-          Ping server
+        <div className="tw-flex tw-gap-2 tw-items-center">
+          <span>Server Status:</span>
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <div className="tw-flex tw-gap-1 tw-items-center">
+              <StatusCircle status={isSuccess} />
+              <span className="tw-text-sm tw-font-medium">
+                {isSuccess ? "Up" : "Down"}
+              </span>
+            </div>
+          )}
         </div>
       </div>
       <div className="tw-px-3 tw-space-y-3">
