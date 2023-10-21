@@ -8,9 +8,16 @@ interface Props {
   children?: ReactNode;
   className?: string;
   placeholder?: string;
+  disabled?: boolean;
 }
 
-const Search: FC<Props> = ({ onSubmit, children, className, placeholder }) => {
+const Search: FC<Props> = ({
+  onSubmit,
+  children,
+  className,
+  placeholder,
+  disabled,
+}) => {
   const [value, setValue] = useState("");
 
   return (
@@ -30,6 +37,7 @@ const Search: FC<Props> = ({ onSubmit, children, className, placeholder }) => {
         onChange={(e) => {
           setValue(e.target.value);
         }}
+        disabled={disabled}
       />
       {children}
     </form>

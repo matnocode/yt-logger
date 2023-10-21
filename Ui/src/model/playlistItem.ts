@@ -2,7 +2,7 @@ export interface Playlist {
   title: string;
   refId: string;
   itemCount: number;
-  lastLogged: string;
+  lastLogged?: string;
   imgUrl: string;
 }
 

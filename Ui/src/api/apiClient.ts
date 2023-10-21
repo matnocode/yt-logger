@@ -32,7 +32,9 @@ const getFullUrlWithParams = (
   if (!params) {
     return url;
   }
-  url = "https://94.244.81.178:5001" + url;
+
+  url = "https://servedata.sytes.net" + url;
+  // url = "https://localhost:5001" + url;
 
   const transform = (value: ParamTypes): string => {
     if (value === null || value === undefined) {

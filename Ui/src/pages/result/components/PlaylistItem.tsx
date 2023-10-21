@@ -47,7 +47,10 @@ const PlaylistItem: React.FC<Props> = ({ playlist, isLoading }) => {
             <ItemGroup
               label={"Last Logged"}
               value={
-                <div>{getYearDate(new Date(playlist?.lastLogged ?? ""))}</div>
+                <div>
+                  {playlist?.lastLogged &&
+                    getYearDate(new Date(playlist?.lastLogged))}
+                </div>
               }
             />
           </>

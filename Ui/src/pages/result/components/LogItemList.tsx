@@ -33,7 +33,7 @@ const LogItemList: FC<Props> = ({ log }) => {
             </Button>
           )}
           <div className="tw-w-full tw-text-center tw-text-base md:tw-font-medium">
-            {getDate(new Date(log.timeStamp))} UTC
+            {getDate(log.timeStamp)}
           </div>
         </div>
       </div>

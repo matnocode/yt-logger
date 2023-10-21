@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 using yt_logger.Data;
 using yt_logger.Data.Entities;
 using yt_logger.Data.Interfaces;
@@ -12,8 +13,20 @@ namespace yt_logger
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            var dev = false;
 
-            builder.Services.AddDbContext<YtLoggerDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("YtLoggerDb")));
+            if (!dev)
+                builder.WebHost.UseKestrel(options =>
+                {
+                    options.Listen(IPAddress.Any, 5001, listenOptions =>
+                    {
+                        listenOptions.UseHttps("C:\\Certificate\\certificate.pfx", "Matas333");
+                    });
+                });
+
+            var connectionString = builder.Configuration.GetConnectionString("YtLoggerDb");
+
+            builder.Services.AddDbContext<YtLoggerDbContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddMediatR(conf => conf.RegisterServicesFromAssemblyContaining(typeof(Program)));
@@ -31,7 +44,8 @@ namespace yt_logger
 
             var app = builder.Build();
 
-            if (app.Environment.IsDevelopment())
+
+            if (dev)
             {
                 app.UseCors(options => options
                 .WithOrigins("http://localhost:5173")
@@ -46,6 +60,13 @@ namespace yt_logger
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials());
+
+                app.UseHsts();
+                app.UseCors(options => options
+                  .WithOrigins("https://ylogger.vercel.app")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials());
             }
 
             app.UseHttpsRedirection();

@@ -23,22 +23,24 @@ namespace yt_logger.Services
         public async Task LogPlaylist(string refId)
         {
             var ytPlaylist = await ytService.GetYtPlaylistAsync(refId) ?? throw new BadHttpRequestException("no playlist");
+
             var dbPlaylist = await ValidateDbPlaylist(refId);
-
-            var ytPlaylistItems = await ytService.GetYtPlaylistItemsAsync(refId) ?? throw new BadHttpRequestException("no playlist");
-            var playlistItems = new List<PlaylistItemDb>();
-
             dbPlaylist.ImgUrl = ytPlaylist.ImgUrl;
 
-            do
-            {
-                foreach (var ytItem in ytPlaylistItems.Items)
-                    if (ytItem != null)
-                        playlistItems.Add(ytItem.ToDbItem());
+            var playlistItems = new List<PlaylistItemDb>();
+            var ytPlaylistItems = await ytService.GetYtPlaylistItemsAsync(refId) ?? throw new BadHttpRequestException("no playlist");
+            var ManageResponseResults = () => ytPlaylistItems.Items.ForEach(x => playlistItems.Add(x.ToDbItem()));
+            ManageResponseResults();
 
-                ytPlaylistItems = await ytService.GetYtPlaylistItemsAsync(refId, ytPlaylistItems.NextPageToken) ?? new YoutubePlaylistItemResponse() { Items = new(), NextPageToken = "" };
+            var loop = !string.IsNullOrEmpty(ytPlaylistItems.NextPageToken);
+            while (loop)
+            {
+                ytPlaylistItems = await ytService.GetYtPlaylistItemsAsync(refId, ytPlaylistItems.NextPageToken);
+                ManageResponseResults();
+
+                if (string.IsNullOrEmpty(ytPlaylistItems.NextPageToken))
+                    loop = false;
             }
-            while (!string.IsNullOrEmpty(ytPlaylistItems.NextPageToken));
 
             await AddEditPlaylistVideos(dbPlaylist.PlaylistItems?.ToList() ?? new(), playlistItems, dbPlaylist);
         }
@@ -81,7 +83,8 @@ namespace yt_logger.Services
 
             //check user
             //if not logged, 1 log request per day
-            if (dbPlaylist.LastLogDate >= DateTime.UtcNow.AddDays(-1))
+
+            if (dbPlaylist.LastLogDate != null && dbPlaylist.LastLogDate >= DateTime.UtcNow.AddDays(-1))
                 throw new BadHttpRequestException("log limit for the day reached for this playlist");
 
             return dbPlaylist;
